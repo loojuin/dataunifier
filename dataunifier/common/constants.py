@@ -1,0 +1,17 @@
+"""
+Constants that will be used throughout the application.
+"""
+
+import string
+
+DEFAULT_TIMEZONE = "Asia/Singapore"
+DEFAULT_ENCODING = "utf8"
+
+NO_SUCH_FIELD_EXCEPTION_PREFIX = "FIELD ERROR"
+SYNTAX_EXCEPTION_PREFIX = "SYNTAX ERROR"
+COMMAND_LINE_EXCEPTION_PREFIX = "COMMAND LINE ERROR"
+CONFIG_EXCEPTION_PREFIX = "CONFIGURATION ERROR"
+INPUT_FILE_EXCEPTION_PREFIX = "INPUT FILE ERROR"
+PARSING_EXCEPTION_PREFIX = "PARSING ERROR"
+
+PRINTABLE_CHARS = set(string.printable.replace("\n", "").replace("\r", "").replace("\t", ""))

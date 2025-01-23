@@ -1,0 +1,193 @@
+---
+name: "Test Fileset"
+input_files:
+  - name: "Test CSV Simple"
+    regex: "^testcsv.csv$"
+  - name: "Test CSV Multiple Regex"
+    regex:
+      - "^testcsv1.csv$"
+      - "^testcsv1.csv$"
+  - name: "Test Excel 1"
+    regex: "^testexcel1.xlsx$"
+    sheets:
+      - "sheet1"
+  - name: "Test Excel 2"
+    regex: "^testexcel2.xlsx$"
+    sheets:
+      - regex: "^sheet\\d$"
+        mandatory: False
+tasks:
+  - name: Map Fields
+    map_fields:
+      ignore_case: true
+      fields:
+        - target_field: "targetField0"
+        - target_field: "targetField1"
+          src_fields: "srcField1"
+        - target_field: "targetField2"
+          src_fields:
+            - "srcField2a"
+            - "srcField2b"
+          ignore_case: false
+        - target_field: "targetField3"
+          src_fields:
+            - "srcField3a"
+            - "srcField3b"
+          mandatory: False
+  - name: Task Block
+    block:
+      - name: "Set targetField0 to 'chippermonkey'"
+        set_field_value:
+          field: "targetField0"
+          value: "chippermonkey"
+        when:
+          value_of_field: "someField"
+          matches_regex: "someRegex"
+      - name: "Interpret Date"
+        convert_date_format:
+          fields:
+            - "targetField1"
+            - "targetField2"
+          accepted_formats:
+            - "format1"
+            - "format2"
+          target_format: "targetFormat"
+          allow_blank: false
+        when:
+          value_of_field: "someField"
+          matches_regex: "someRegex"
+    when:
+      value_of_field: "someField"
+      matches_regex: "someRegex"
+  - name: "Lowercase"
+    lowercase:
+      fields:
+        - "targetField0"
+        - "targetField3"
+    when:
+      value_of_field: "someField"
+      matches_regex: "someRegex"
+  - name: "Uppercase"
+    uppercase:
+      fields:
+        - "targetField1"
+        - "targetField2"
+    when:
+      value_of_field: "someField"
+      matches_regex: "someRegex"
+  - name: "Replace"
+    replace:
+      fields: "targetField1"
+      on_unmatched: fail
+      allow_blank: false
+      rules:
+        - replace: "This"
+          with: "That"
+        - replace:
+            - "anything"
+            - "something"
+          with: "nothing"
+    when:
+      value_of_field: "someField"
+      matches_regex: "someRegex"
+  - name: "Regex Replace"
+    regex_replace:
+      fields: "targetField1"
+      on_unmatched: fail
+      allow_blank: false
+      rules:
+        - replace: "^This$"
+          with: "That"
+        - replace:
+            - "^anything$"
+            - "something"
+          with: "nothing"
+    when:
+      value_of_field: "someField"
+      matches_regex: "someRegex"
+  - name: "Discard Record"
+    discard_record:
+    when:
+      value_of_field: "someField"
+      matches_regex: "someRegex"
+  - name: "Copy fields"
+    copy_field_value:
+      from_field: targetField0
+      to_fields:
+        - targetField2
+        - targetField3
+    when:
+      value_of_field: "someField"
+      matches_regex: "someRegex"
+  - name: "Concatenate fields"
+    concatenate_fields:
+      fields:
+        - targetField0
+        - targetField1
+      to_field: targetField2
+      with_string: "_"
+    when:
+      value_of_field: "someField"
+      matches_regex: "someRegex"
+  - name: "CSV Lookup"
+    csv_lookup_replace:
+      fields:
+        - targetField0
+        - targetField1
+      directory: "testassets"
+      filename_regex: "^testcsv\\.csv$"
+      on_unmatched: blank
+      lookup_column: lookup
+      value_column: value
+    when:
+      value_of_field: "someField"
+      matches_regex: "someRegex"
+  - name: "CSV Match"
+    csv_match:
+      fields: targetField2
+      directory: "testassets"
+      filename_regex: "^testcsv\\.csv$"
+      lookup_column: lookup
+      match_value: match
+      unmatch_value: unmatch
+    when:
+      value_of_field: "someField"
+      matches_regex: "someRegex"
+  - name: "Arithmetic"
+    arithmetic:
+      left_field: targetField0
+      right_field: targetField1
+      result_field: targetField2
+      operation: multiply
+      blank_is_zero: true
+    when:
+      value_of_field: "someField"
+      matches_regex: "someRegex"
+  - name: "Fuzzy Match"
+    fuzzy_match_replace:
+      fields: targetField0
+      method: jaccard
+      minimum_score: 0.5
+      on_unmatched: fail
+      rules:
+        - string: "string1"
+          replacement: "replacement1"
+        - string:
+            - "string2a"
+            - "string2b"
+          replacement: "replacement2"
+    when:
+      and:
+        - not:
+            value_of_field: "someField1"
+            matches_regex: "someRegex1"
+        - or:
+            - value_of_field: "someField2"
+              matches_regex: "someRegex2"
+            - value_of_field: "someField3"
+              matches_regex: "someRegex3"
+  - name: "Discard Fields"
+    discard_fields:
+      fields:
+        - targetField2
+        - targetField3

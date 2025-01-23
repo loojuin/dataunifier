@@ -1,0 +1,12 @@
+.idea
+__pycache__
+**/__pycache__
+*.pyc
+**/*.pyc
+input/*
+output/*
+.pytest_cache
+**/.pytest_cache
+.vscode
+testconfigs/*
+error.log

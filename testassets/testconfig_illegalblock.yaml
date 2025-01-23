@@ -1,0 +1,26 @@
+---
+filesets:
+  - name: "Test Fileset"
+    input_files:
+      - name: "Test CSV Simple"
+        regex: "^testcsv.csv$"
+    tasks:
+      - name: Task Block
+        block:
+          - name: Map Fields
+            map_fields:
+              ignore_case: true
+              fields:
+                - target_field: "targetField0"
+                - target_field: "targetField1"
+                  src_fields: "srcField1"
+                - target_field: "targetField2"
+                  src_fields:
+                    - "srcField2a"
+                    - "srcField2b"
+                  ignore_case: false
+                - target_field: "targetField3"
+                  src_fields:
+                    - "srcField3a"
+                    - "srcField3b"
+                  mandatory: False

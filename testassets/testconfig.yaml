@@ -1,0 +1,3 @@
+---
+filesets:
+  - "{{ import_file:testassets/testfileset.yaml }}"
